@@ -4,12 +4,18 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 import com.ib.controller.ApiController;
 import connection.ConnectionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import strategy.Simple;
+import strategy.Strategy;
+import strategy.WX;
 
+import java.io.FileReader;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Zihao Chen
@@ -20,7 +26,14 @@ public class ControllerModule extends AbstractModule {
 
     @Override
     protected void configure() {
-
+        try {
+            final String fileName = System.getProperty("config.properties");
+            final Properties properties = new Properties();
+            properties.load(new FileReader(fileName));
+            Names.bindProperties(binder(), properties);
+        } catch (Exception e) {
+            LOGGER.error("Error when load config file", e);
+        }
     }
 
     @Provides
@@ -52,5 +65,23 @@ public class ControllerModule extends AbstractModule {
             tradingAccount = accounts.get(0);
         }
         return tradingAccount;
+    }
+
+    @Provides
+    public Strategy provideStrategy(@Named("strategy.name") String name,
+                                    @Named("a.law") int aLaw,
+                                    @Named("h.law") int hLaw,
+                                    @Named("setp") double setp) {
+        switch (name.toLowerCase()) {
+            case "wx":
+                final WX strategy = new WX();
+                strategy.setALaw(aLaw);
+                strategy.setHLaw(hLaw);
+                strategy.setSetp(setp);
+                return strategy;
+            default:
+                LOGGER.warn("Invalid strategy name provided, use default one");
+                return new Simple();
+        }
     }
 }

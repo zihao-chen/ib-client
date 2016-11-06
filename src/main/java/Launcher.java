@@ -2,7 +2,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.ib.controller.ApiController;
 import guice.ControllerModule;
-import guice.StrategyModule;
 import strategy.Strategy;
 
 import java.util.concurrent.Executors;
@@ -21,7 +20,7 @@ public class Launcher {
     public void start() {
         service = Executors.newScheduledThreadPool(1);
 
-        final Injector injector = Guice.createInjector(new ControllerModule(), new StrategyModule());
+        final Injector injector = Guice.createInjector(new ControllerModule());
         controller = injector.getInstance(ApiController.class);
 
         final Strategy strategy = injector.getInstance(Strategy.class);
