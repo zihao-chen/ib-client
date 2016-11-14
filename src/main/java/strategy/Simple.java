@@ -55,7 +55,7 @@ public class Simple extends AbstractStrategy {
             final Position position = contractDetails.get(s);
             if (Math.abs(position.position()) < 300) {
                 final Contract originalContract = position.contract();
-                LOGGER.info("{}, with Unrealised PnL of {}, has less than ", originalContract.symbol(), position.unrealPnl());
+                LOGGER.info("{}, with Unrealised PnL of {}", originalContract.symbol(), position.unrealPnl());
                 final Contract contract = createContract(originalContract);
 
                 controller.reqContractDetails(contract, incomingContracts -> {

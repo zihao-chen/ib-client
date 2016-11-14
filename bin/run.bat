@@ -1,0 +1,1 @@
+java -cp "lib/ib-client-0.1-SNAPSHOT.jar;lib/*" -Xmx512m -Xms64m -Dconfig.properties=config/simple.properties -Dlogback.configurationFile=config/logback.xml Main
